@@ -89,3 +89,21 @@ account_db.delete_account("0003")
 account_db.show_account("0003")
 account_db.deposit("0003", 50)
 account_db.withdraw("0001", 6000)
+
+print("Accounts before deletion:")
+for account in account_db.accounts:
+    account.show_account()
+
+print("\nDeleting account 0001 (should succeed):")
+account_db.delete_account("0001")
+
+print("\nAccounts after deleting 0001:")
+for account in account_db.accounts:
+    account.show_account()
+
+print("\nAttempting to delete a non-existent account 9999 (should fail):")
+account_db.delete_account("9999")
+
+print("\nFinal accounts after all delete operations:")
+for account in account_db.accounts:
+    account.show_account()
