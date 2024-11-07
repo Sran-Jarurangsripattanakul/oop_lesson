@@ -49,45 +49,43 @@ class CityDB:
                 temps.append(city.temperature)
         return min(temps) if temps else None
     
-# Instantiate the CityDatabase and load the data
-city_db = CityDatabase()
+# Assuming City and CityDB classes are already defined and 'Cities.csv' is available in the same directory
+
+# Instantiate CityDB and load the real Cities.csv data
+city_db = CityDB()
 city_db.load_cities('Cities.csv')
 
-# Print the average temperature of all cities
-print("The average temperature of all the cities:")
-average_temp_all = city_db.calculate_average_temperature()
-print(f"{average_temp_all:.2f}°C\n" if average_temp_all is not None else "No data available\n")
+# Test each function and print results
+print("Testing each function with real Cities.csv data:\n")
 
-# Print all cities in Italy
-country_name = 'Italy'
-italy_cities = city_db.get_cities_by_country(country_name)
-print(f"All the cities in {country_name}: {italy_cities}\n")
+# Test 1: Average temperature of all cities
+print("Average temperature of all cities:")
+print(city_db.calculate_avg_temp())  # Expected output based on your actual data
 
-# Print the average temperature for all cities in Italy
-average_temp_italy = city_db.calculate_average_temperature_by_country(country_name)
-print(f"The average temperature of all the cities in {country_name}:")
-print(f"{average_temp_italy:.2f}°C\n" if average_temp_italy is not None else "No data available\n")
+# Test 2: Cities in Italy
+print("\nCities in Italy:")
+city_db.get_cities_by_country("Italy")  # Expected output: all cities in Italy from the CSV file
 
-# Print the max temperature for all cities in Italy
-max_temp_italy = city_db.calculate_max_temperature_by_country(country_name)
-print(f"The max temperature of all the cities in {country_name}:")
-print(f"{max_temp_italy:.2f}°C\n" if max_temp_italy is not None else "No data available\n")
+# Test 3: Average temperature in Italy
+print("\nAverage temperature in Italy:")
+print(city_db.calculate_avg_temp_by_country("Italy"))  # Expected: Average temperature of cities in Italy
 
-# Print the min temperature for all cities in Italy
-min_temp_italy = city_db.calculate_min_temperature_by_country(country_name)
-print(f"The min temperature of all the cities in {country_name}:")
-print(f"{min_temp_italy:.2f}°C\n" if min_temp_italy is not None else "No data available\n")
+# Test 4: Max temperature in Italy
+print("\nMax temperature in Italy:")
+print(city_db.calculate_max_temp_by_country("Italy"))  # Expected: Maximum temperature among Italian cities
 
-# Additional calculations for Sweden
-sweden_name = 'Sweden'
-average_temp_sweden = city_db.calculate_average_temperature_by_country(sweden_name)
-print(f"The average temperature of all the cities in {sweden_name}:")
-print(f"{average_temp_sweden:.2f}°C\n" if average_temp_sweden is not None else "No data available\n")
+# Test 5: Min temperature in Italy
+print("\nMin temperature in Italy:")
+print(city_db.calculate_min_temp_by_country("Italy"))  # Expected: Minimum temperature among Italian cities
 
-max_temp_sweden = city_db.calculate_max_temperature_by_country(sweden_name)
-print(f"The max temperature of all the cities in {sweden_name}:")
-print(f"{max_temp_sweden:.2f}°C\n" if max_temp_sweden is not None else "No data available\n")
+# Test 6: Average temperature in Sweden
+print("\nAverage temperature in Sweden:")
+print(city_db.calculate_avg_temp_by_country("Sweden"))  # Expected: Average temperature of cities in Sweden
 
-min_temp_sweden = city_db.calculate_min_temperature_by_country(sweden_name)
-print(f"The min temperature of all the cities in {sweden_name}:")
-print(f"{min_temp_sweden:.2f}°C\n" if min_temp_sweden is not None else "No data available\n")
+# Test 7: Max temperature in Sweden
+print("\nMax temperature in Sweden:")
+print(city_db.calculate_max_temp_by_country("Sweden"))  # Expected: Maximum temperature among Swedish cities
+
+# Test 8: Min temperature in Sweden
+print("\nMin temperature in Sweden:")
+print(city_db.calculate_min_temp_by_country("Sweden"))  # Expected: Minimum temperature among Swedish cities
