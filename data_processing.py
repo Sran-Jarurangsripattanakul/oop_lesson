@@ -1,91 +1,91 @@
+class TableDB:
+    def __init__(self):
+        self.tables = []
+
+    def add(self, table):
+        index = self.find_table(table)
+        if index == -1:
+            self.tables.append(table)
+        else:
+            print(f"Table {table.name} already exists in the database.")
+
+    def find_table(self, table_name):
+        for table in self.tables:
+            if table.name == table_name:
+                return table
+        return -1
+
+class Table:
+    def __init__(self, name, data):
+        self.name = name
+        self.data = data
+
+    def filter_data(self, condition):
+        return [item for item in self.data if condition(item)]
+
+    def aggregate_data(self, key, func):
+        values = [float(item[key]) for item in self.data]
+        return func(values)
+
+    def __str__(self):
+        return f"DataTable: {self.name} with {len(self.data)} records."
+
 import csv, os
 
-class City:
-    def __init__(self, city_name, country, temperature):
-        self.city_name = city_name
-        self.country = country
-        self.temperature = float(temperature)
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-class CityDB:
-    def __init__(self):
-        self.cities = []
-        self.__location__ = os.path.realpath(
-            os.path.join(os.getcwd(), os.path.dirname(__file__)))
+cities = []
+with open(os.path.join(__location__, 'Cities.csv')) as f:
+    rows = csv.DictReader(f)
+    for r in rows:
+        cities.append(dict(r))
 
-    def load_cities(self, file):
-        with open(os.path.join(self.__location__, file)) as f:
-            rows = csv.DictReader(f)
-            for row in rows:
-                city = City(row['city'], row['country'], row['temperature'])
-                self.cities.append(city)
+countries = []
+with open(os.path.join(__location__, 'Countries.csv')) as f:
+    rows = csv.DictReader(f)
+    for r in rows:
+        countries.append(dict(r))
+# Let's write code to
 
-    def calculate_avg_temp(self):
-        temps = [city.temperature for city in self.cities]
-        return sum(temps)/len(temps)
-    
-    def get_cities_by_country(self, country):
-        for city in self.cities:
-            if city.country == country:
-                print(city.city_name)
-    
-    def calculate_avg_temp_by_country(self, country):
-        temps = []
-        for city in self.cities:
-            if city.country == country:
-                temps.append(city.temperature)
-        return sum(temps) / len(temps) if temps else None
+cities_table = Table("cities", cities)
+countries_table = Table("countries", countries)
 
-    def calculate_max_temp_by_country(self, country):
-        temps = []
-        for city in self.cities:
-            if city.country == country:
-                temps.append(city.temperature)
-        return max(temps) if temps else None
-    
-    def calculate_min_temp_by_country(self, country):
-        temps = []
-        for city in self.cities:
-            if city.country == country:
-                temps.append(city.temperature)
-        return min(temps) if temps else None
-    
-# Assuming City and CityDB classes are already defined and 'Cities.csv' is available in the same directory
+# Initialize the database
+database = TableDB()
+database.add(cities_table)
+database.add(countries_table)
 
-# Instantiate CityDB and load the real Cities.csv data
-city_db = CityDB()
-city_db.load_cities('Cities.csv')
+# Filter cities by country
+italian_cities = cities_table.filter_data(lambda city: city['country'] == 'Italy')
+swedish_cities = cities_table.filter_data(lambda city: city["country"] == "Sweden")
 
-# Test each function and print results
-print("Testing each function with real Cities.csv data:\n")
+# Create new Table for Italian and Swedish cities
+italian_city_table = Table("ItalianCities", italian_cities)
+swedish_city_table = Table("SwedishCities", swedish_cities)
 
-# Test 1: Average temperature of all cities
-print("Average temperature of all cities:")
-print(city_db.calculate_avg_temp())  # Expected output based on your actual data
+database.add(italian_city_table)
+database.add(swedish_city_table)
 
-# Test 2: Cities in Italy
-print("\nCities in Italy:")
-city_db.get_cities_by_country("Italy")  # Expected output: all cities in Italy from the CSV file
+# Calculate and display average temperature in Italian cities
+avg_temp_italy = italian_city_table.aggregate_data("temperature", lambda x: sum(x)/len(x))
+print(f"Average temperature in Italian cities: {avg_temp_italy}")
 
-# Test 3: Average temperature in Italy
-print("\nAverage temperature in Italy:")
-print(city_db.calculate_avg_temp_by_country("Italy"))  # Expected: Average temperature of cities in Italy
+# Calculate and display average temperature in Swedish cities
+avg_temp_sweden = swedish_city_table.aggregate_data("temperature", lambda x: sum(x)/len(x))
+print(f"Average temperature in Swedish cities: {avg_temp_sweden}")
 
-# Test 4: Max temperature in Italy
-print("\nMax temperature in Italy:")
-print(city_db.calculate_max_temp_by_country("Italy"))  # Expected: Maximum temperature among Italian cities
+# Calculate and display the minimum temperature in Italian cities
+min_temp_italy = italian_city_table.aggregate_data("temperature", lambda x: min(x))
+print(f"Minimum temperature in Italian cities: {min_temp_italy}")
 
-# Test 5: Min temperature in Italy
-print("\nMin temperature in Italy:")
-print(city_db.calculate_min_temp_by_country("Italy"))  # Expected: Minimum temperature among Italian cities
+# Calculate and display the maximum temperature in Swedish cities
+max_temp_sweden = swedish_city_table.aggregate_data("temperature", lambda x: max(x))
+print(f"Maximum temperature in Swedish cities: {max_temp_sweden}")
 
-# Test 6: Average temperature in Sweden
-print("\nAverage temperature in Sweden:")
-print(city_db.calculate_avg_temp_by_country("Sweden"))  # Expected: Average temperature of cities in Sweden
+# Find the maximum and minimum latitude across all cities
+max_latitude = cities_table.aggregate_data("latitude", lambda x: max(x))
+min_latitude = cities_table.aggregate_data("latitude", lambda x: min(x))
 
-# Test 7: Max temperature in Sweden
-print("\nMax temperature in Sweden:")
-print(city_db.calculate_max_temp_by_country("Sweden"))  # Expected: Maximum temperature among Swedish cities
-
-# Test 8: Min temperature in Sweden
-print("\nMin temperature in Sweden:")
-print(city_db.calculate_min_temp_by_country("Sweden"))  # Expected: Minimum temperature among Swedish cities
+print(f"Maximum latitude across all cities: {max_latitude}")
+print(f"Minimum latitude across all cities: {min_latitude}")
